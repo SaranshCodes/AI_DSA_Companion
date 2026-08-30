@@ -23,7 +23,7 @@ def init_db():
                    url TEXT,
                    difficulty TEXT,
                    primary_pattern TEXT,
-                   scondary_patterns TEXT,
+                   secondary_patterns TEXT,
                    recognition_signals TEXT,
                    why_this_pattern TEXT,
                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
