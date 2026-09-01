@@ -58,3 +58,50 @@ def analyse_problem(problem_text: str) -> dict:
         raise ValueError("AI returned malformed JSON. Please try again")
     except Exception as e:
         raise Exception(f'AI analysis failed: {str(e)}')
+
+def generate_hint(problem_text: str, pattern: str, hint_level: int) -> str:
+    """
+    Requests a specific level of hint from Gemini
+    """
+    from prompts.hint_prompt import PROGRESSIVE_HINT_PROMPT
+    try:
+        client = genai.Client(api_key=api_key)
+        prompt = PROGRESSIVE_HINT_PROMPT.replace("{pattern}", pattern)
+        prompt = prompt.replace("{hint_level}", str(hint_level))
+        prompt = prompt.replace("{problem_text}", problem_text)
+        
+        response = client.models.generate_content(
+            model ='gemini-2.5-flash',
+            contents=prompt
+        )
+        return response.text.strip()
+    
+    except Exception as e:
+        raise Exception(f"Failed to generate hint: {str(e)}")
+    
+def generate_solution(problem_text: str, pattern: str) -> dict:
+    '''
+    Requests the final approach and code, returned as structured JSON
+    '''
+    from prompts.hint_prompt import SOLUTION_PROMPT
+    try:
+        client = genai.Client(api_key=api_key)
+        prompt = SOLUTION_PROMPT.replace("{pattern}",pattern)
+        prompt = prompt.replace("{problem_text}",problem_text)
+        response = client.models.generate_content(
+            model = 'gemini-2.5-flash',
+            contents=prompt
+        )
+        
+        raw_text = response.text.strip()
+        if raw_text.startswith("```json"):
+            raw_text = raw_text[7:-3].strip()
+        elif raw_text.startswith("```"):
+            raw_text = raw_text[3:-3].strip()
+            
+        solution_data = json.loads(raw_text)
+        return solution_data
+    except json.JSONDecodeError:
+        raise ValueError("AI returned malformed JSON for the solution")
+    except Exception as e:
+        raise Exception(f"Failed to generate solution: {str(e)}")

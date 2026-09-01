@@ -1,0 +1,3 @@
+[server]
+# Prevents the app from reloading when the database updates
+fileWatcherType = "none"
