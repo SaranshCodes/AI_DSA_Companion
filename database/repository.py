@@ -51,7 +51,7 @@ def save_session(problem_id: int, time_taken_mins: int, hints_used: int,
                    INSERT INTO sessions (
                        problem_id, time_taken_mins, hints_used, approach_requested, code_requested, status, solved_independently,
                        confidence, struggle_notes, completed_at)
-                       VALUES (?,?,?,?,?,?,?,?, CURRENT_TIMESTAMP)
+                       VALUES (?,?,?,?,?,?,?,?,?, CURRENT_TIMESTAMP)
                        RETURNING id;""",
                        (problem_id, time_taken_mins, hints_used, int(approach_requested), int(code_requested),
                         status, solved_independently, confidence, struggle_notes))
