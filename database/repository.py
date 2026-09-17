@@ -1,4 +1,5 @@
 import json
+import pandas as pd
 from database.db_setup import get_connection
 
 def save_problem(leetcode_id: str, title: str, url: str, difficulty: str,
@@ -59,3 +60,13 @@ def save_session(problem_id: int, time_taken_mins: int, hints_used: int,
     conn.commit()
     conn.close()
     return session_id
+
+def get_dashboard_stats() -> pd.DataFrame:
+    """Fetches all session and problem data for the dashboard"""
+    conn = get_connection()
+    # We need to join both tables to get pattern info alongside session performance
+    query = "SELECT p.leetcode_id,p.title, p.difficulty, p.primary_pattern, s.time_taken_mins, s.hints_used, s.status, s.solved_independently, s.confidence, s.completed_at FROM sessions s Join problems p ON s.problem_id = p.id ORDER BY s.completed_at DESC"
+    
+    df = pd.read_sql_query(query,conn)
+    conn.close()
+    return df 
