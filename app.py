@@ -1,5 +1,7 @@
 import streamlit as st 
+from database.db_setup import init_db
 
+init_db()
 
 st.set_page_config(page_title='AI DSA COMPANION', 
                    layout='centered')
