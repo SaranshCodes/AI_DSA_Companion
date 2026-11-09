@@ -1,12 +1,15 @@
 from fastapi import FastAPI, Depends, HTTPException
 from supabase import Client
 from app.database.connection import get_supabase
+from app.routes.auth import router as auth_router
+
 
 app = FastAPI(
     title = 'AI DSA Companion API',
     description = 'Backend API for the AI DSA Companion V2',
     version = "2.0.0"
 )
+app.include_router(auth_router)
 @app.get("/")
 async def root():
     return {'status':"success",
