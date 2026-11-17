@@ -1,6 +1,6 @@
 import streamlit as st
 import datetime
-from services.gemini_service import analyse_problem, generate_hint, generate_solution
+from app.services.gemini_service import analyse_problem, generate_hint, generate_solution
 from database.repository import save_problem, save_session
 
 st.set_page_config(page_title="Active Session", page_icon="🎯", layout="centered")

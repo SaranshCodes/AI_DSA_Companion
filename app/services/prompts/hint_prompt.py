@@ -24,6 +24,8 @@ Return ONLY a valid JSON object with this exact structure. Do not include markdo
 {
     "approach": "A clear, concise explanation of the optimal algorithm. Include Time and Space complexity at the end.",
     "code": "The complete Python 3 solution with clear comments."
+    "time_complexity": "The Big O time complexity, e.g., O(N)",
+    "space_complexity": "The Big O space complexity, e.g., O(1)"
 }
 
 Problem Description:
