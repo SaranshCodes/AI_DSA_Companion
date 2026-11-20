@@ -30,4 +30,6 @@ Thumbs.db
 
 # Logs
 *.log
-.pdf
+
+
+*.pdf
