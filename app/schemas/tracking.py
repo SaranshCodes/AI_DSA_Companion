@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel,Field
 from typing import List, Optional
 
 class ProblemCreate(BaseModel):
@@ -16,6 +16,10 @@ class SessionCreate(BaseModel):
     hints_used: int
     approach_requested: bool
     code_requested: bool
+    
+    hints_used_after_solve: int = Field(default =0,description = "Hints used after solving")
+    approach_requested_after_solve: bool = Field(default=False, description="Approach viewed AFTER solving")
+    code_requested_after_solve: bool = Field(default=False, description="Code viewed AFTER solving")
     status: str
     solved_independently: str
     confidence: int

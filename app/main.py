@@ -4,7 +4,7 @@ from app.database.connection import get_supabase
 from app.routes.auth import router as auth_router
 from app.routes.analysis import router as analysis_router
 from app.routes.sessions import router as sessions_router
-
+from app.routes.dashboard import router as  dashboard_router
 app = FastAPI(
     title = 'AI DSA Companion API',
     description = 'Backend API for the AI DSA Companion V2',
@@ -13,6 +13,8 @@ app = FastAPI(
 app.include_router(auth_router)
 app.include_router(analysis_router)
 app.include_router(sessions_router)
+app.include_router(dashboard_router)
+
 @app.get("/")
 async def root():
     return {'status':"success",
