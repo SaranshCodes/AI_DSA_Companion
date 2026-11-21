@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from supabase import Client
 from app.database.connection import get_supabase
 from app.routes.auth import router as auth_router
@@ -13,6 +14,13 @@ app = FastAPI(
     description = 'Backend API for the AI DSA Companion V2',
     version = "2.0.0"
 )
+app.add_middleware(CORSMiddleware,
+                   allow_origins=["*"],
+                   allow_credentials=True,
+                   allow_methods=["*"],
+                   allow_headers= ["*"]
+                   )
+
 app.include_router(auth_router)
 app.include_router(analysis_router)
 app.include_router(sessions_router)

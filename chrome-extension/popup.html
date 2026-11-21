@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI DSA Companion</title>
+  <style>
+    body {
+      width: 360px;
+      padding: 14px;
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: #0f172a;
+      color: #f8fafc;
+      margin: 0;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    h2 {
+      margin: 0;
+      font-size: 16px;
+      color: #34d399;
+    }
+    .hidden { display: none; }
+    .card {
+      background: #1e293b;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.45;
+      margin-bottom: 10px;
+    }
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: #f8fafc;
+      font-size: 13px;
+    }
+    button {
+      width: 100%;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      background: #10b981;
+      color: #0f172a;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 13px;
+      margin-top: 6px;
+    }
+    button:hover { background: #34d399; }
+    button:disabled {
+      background: #334155;
+      color: #94a3b8;
+      cursor: not-allowed;
+    }
+    .btn-small {
+      width: auto;
+      padding: 4px 8px;
+      font-size: 11px;
+      margin: 0;
+      background: #334155;
+      color: #f8fafc;
+    }
+    .btn-small:hover { background: #475569; }
+    .status {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+    .error {
+      color: #f87171;
+      font-size: 12px;
+      margin-top: 6px;
+    }
+    .badge {
+      display: inline-block;
+      background: #065f46;
+      color: #a7f3d0;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    ul {
+      margin: 4px 0 8px 18px;
+      padding: 0;
+      color: #cbd5e1;
+    }
+    .hint-box {
+      background: #0f172a;
+      border-left: 3px solid #34d399;
+      padding: 8px;
+      margin-top: 8px;
+      border-radius: 4px;
+      font-size: 12.5px;
+      color: #e2e8f0;
+    }
+    select, textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 7px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: #f8fafc;
+      font-size: 12.5px;
+      font-family: inherit;
+    }
+    .row {
+      display: flex;
+      gap: 8px;
+    }
+    .row > div {
+      flex: 1;
+    }
+    label {
+      display: block;
+      font-size: 11px;
+      color: #94a3b8;
+      margin-bottom: 3px;
+    }
+    .success {
+      color: #34d399;
+      font-size: 12px;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h2>AI DSA Companion</h2>
+    <button id="logout-btn" class="btn-small hidden">Logout</button>
+  </div>
+
+  <!-- LOGIN VIEW -->
+  <div id="login-section" class="card hidden">
+    <div class="status">Sign in to your V2 backend</div>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <button id="login-btn">Login</button>
+    <div id="login-error" class="error"></div>
+  </div>
+
+  <!-- MAIN APP VIEW -->
+  <div id="app-section" class="hidden">
+    <div id="status" class="status">Scanning active tab...</div>
+
+    <div class="card">
+      <strong id="problem-title">—</strong>
+      <button id="analyze-btn" disabled>Analyze Pattern</button>
+      <button id="hint-btn" disabled>Get Hint (Level 1)</button>
+      <div id="app-error" class="error"></div>
+    </div>
+
+    <div id="analysis-result" class="card hidden">
+      <div class="badge" id="primary-pattern"></div>
+      <div style="font-size: 12px; color: #94a3b8; margin-bottom: 6px;">
+        <strong>Secondary:</strong> <span id="secondary-patterns"></span>
+      </div>
+      <strong style="font-size: 12px;">Recognition Signals:</strong>
+      <ul id="signals-list"></ul>
+      <strong style="font-size: 12px;">Why this pattern:</strong>
+      <div id="why-pattern" style="color: #cbd5e1; margin-top: 2px;"></div>
+    </div>
+
+    <div id="hints-container"></div>
+    <!-- LOG SESSION CARD -->
+    <div id="session-card" class="card hidden">
+      <strong style="display: block; margin-bottom: 8px; color: #34d399;">Log Practice Session</strong>
+      <div class="row">
+        <div>
+          <label for="time-mins">Time (mins)</label>
+          <input type="number" id="time-mins" value="15" min="1" />
+        </div>
+        <div>
+          <label for="session-status">Status</label>
+          <select id="session-status">
+            <option value="Solved">Solved</option>
+            <option value="Attempted">Attempted</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="confidence">Confidence (1–5)</label>
+          <select id="confidence">
+            <option value="5">5 - Mastered</option>
+            <option value="4">4 - Confident</option>
+            <option value="3" selected>3 - Moderate</option>
+            <option value="2">2 - Shaky</option>
+            <option value="1">1 - Lost</option>
+          </select>
+        </div>
+        <div>
+          <label for="hints-display">Hints Used</label>
+          <input type="number" id="hints-display" value="0" min="0" readonly />
+        </div>
+      </div>
+
+      <label for="struggle-notes">Struggle Notes (optional)</label>
+      <textarea id="struggle-notes" rows="2" placeholder="What tripped you up?"></textarea>
+
+      <button id="save-session-btn">Save Session</button>
+      <div id="session-msg" class="success"></div>
+      <div id="session-error" class="error"></div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

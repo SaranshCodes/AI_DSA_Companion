@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "AI DSA Companion",
+  "version": "2.0.0",
+  "description": "Pattern recognition, progressive hints, and session tracking for LeetCode.",
+  "permissions": ["activeTab", "storage"],
+  "host_permissions": [
+    "https://leetcode.com/*",
+    "http://127.0.0.1:8000/*",
+    "http://localhost:8000/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "AI DSA Companion"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://leetcode.com/problems/*"],
+      "js": ["content.js"]
+    }
+  ]
+}
