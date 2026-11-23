@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from app.core.config import settings
 from supabase import Client
 from app.database.connection import get_supabase
 from app.routes.auth import router as auth_router
@@ -15,7 +16,7 @@ app = FastAPI(
     version = "2.0.0"
 )
 app.add_middleware(CORSMiddleware,
-                   allow_origins=["*"],
+                   allow_origins=settings.cors_origins,
                    allow_credentials=True,
                    allow_methods=["*"],
                    allow_headers= ["*"]
@@ -31,9 +32,14 @@ app.include_router(recommendations_router)
 async def root():
     return {'status':"success",
             "message":"AI DSA Companion API is running smoothly"}
-    
-@app.get("/health")
-async def health_check(db: Client = Depends(get_supabase)):
+
+@app.get("/health", tags = ["System"])    # This is for liveness
+def health_check():
+    """Lightweight liveness check for Render"""
+    return {"status":"ok"}
+
+@app.get("/health/db", tags = ["System"])        # This is for Readiness ( for db purpose)
+async def db_health_check(db: Client = Depends(get_supabase)):
     """
     Verify that the API can successfully communicate with Supabase.
     """
