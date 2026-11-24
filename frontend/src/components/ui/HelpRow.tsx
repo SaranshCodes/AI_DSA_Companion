@@ -1,7 +1,17 @@
 import React from 'react';
 import { Lock, Lightbulb, CheckCircle2, ChevronRight, Copy, Check } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Button } from './Button';
+
+const customCodeTheme = {
+  ...vscDarkPlus,
+  comment: {
+    color: '#6A9955',
+    fontStyle: 'italic',
+  },
+};
 
 export interface HelpRowProps {
   label: string;
@@ -148,8 +158,31 @@ export const HelpRow: React.FC<HelpRowProps> = ({
       )}
 
       {code && (
-        <div className="mt-3 relative rounded-control bg-surface-inverse text-white p-4 font-mono text-xs overflow-x-auto leading-relaxed">
-          <pre className="m-0">{code}</pre>
+        <div className="mt-3 overflow-hidden rounded-control border border-neutral-800 shadow-sm">
+          <SyntaxHighlighter
+            language="python"
+            style={customCodeTheme}
+            showLineNumbers={true}
+            wrapLongLines={true}
+            customStyle={{
+              backgroundColor: '#161b22',
+              fontSize: '14px',
+              lineHeight: '1.6',
+              padding: '1.25rem',
+              margin: 0,
+              borderRadius: '0',
+              fontFamily:
+                'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+            }}
+            lineNumberStyle={{
+              color: '#6e7681',
+              minWidth: '2.5em',
+              paddingRight: '1em',
+              userSelect: 'none',
+            }}
+          >
+            {code}
+          </SyntaxHighlighter>
         </div>
       )}
     </div>

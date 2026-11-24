@@ -324,8 +324,14 @@ During codebase audit, the 3 known issues were verified against backend source c
 - [x] All 6 screens plus login implemented and responsive down to 360px.
 - [x] Visual fidelity matched to design specifications with top navigation bar.
 - [x] Session counters follow Section 8 rules precisely and partition pre-solve vs post-solve events.
-- [x] All 22 Vitest unit tests pass (`npm run test`).
+- [x] All 28 Vitest unit tests pass (`npm run test`).
 - [x] Zero TypeScript errors (`npm run typecheck`).
 - [x] Zero ESLint errors or warnings (`npm run lint`).
 - [x] Production build generated cleanly in `dist/` (`npm run build`).
 - [x] MSW mock mode available via `VITE_USE_MOCKS=true` with complete screenshot fixture values.
+- [x] Code block syntax highlighting via `react-syntax-highlighter` (Prism `vscDarkPlus` theme, custom `#6A9955` emerald comments, `#161b22` background, line numbers enabled, raw clipboard copy).
+- [x] Multi-user active session scoping & isolation:
+  - Scoped storage key `dsa_active_session_${user.id}`.
+  - Session loading deferred until `user.id` is available.
+  - `logout()` calls `localStorage.clear()` and resets active session React state to `null`.
+  - `login()` and `signup()` clear leftover session keys before setting new token and user object.

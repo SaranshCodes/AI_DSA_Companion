@@ -1,10 +1,10 @@
 import React from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { LogOut, User } from 'lucide-react';
-import { useAuthStore } from '@/features/auth/store/useAuthStore';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 
 export const UserMenu: React.FC = () => {
-  const { email, logout } = useAuthStore();
+  const { email, logout } = useAuth();
   const initial = (email || 'U').charAt(0).toUpperCase();
 
   return (
