@@ -6,8 +6,7 @@
   "permissions": ["activeTab", "storage"],
   "host_permissions": [
     "https://leetcode.com/*",
-    "http://127.0.0.1:8000/*",
-    "http://localhost:8000/*"
+    "https://ai-dsa-companion.onrender.com/*"
   ],
   "action": {
     "default_popup": "popup.html",

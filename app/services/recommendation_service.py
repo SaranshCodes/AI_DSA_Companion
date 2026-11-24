@@ -52,7 +52,7 @@ def generate_recommendations(sessions: List[Dict[str,Any]]) -> RecommendationRes
     pattern_groups = defaultdict(list)
     for s in sessions:
         problem = s.get("problems") or {}
-        pattern = problem.get("primary_pattern") or " Uncategorized"
+        pattern = problem.get("primary_pattern") or "Uncategorized"
         pattern_groups[pattern].append(s)
         
     weak_patterns: List[WeakPatternItem] = []
@@ -148,7 +148,7 @@ def generate_recommendations(sessions: List[Dict[str,Any]]) -> RecommendationRes
         else:
             suggested_action = "Keep practicing new problems to expand your pattern coverage."
             
-        return RecommendationResponse(
+    return RecommendationResponse(
             suggested_next_action = suggested_action,
             weak_patterns=weak_patterns,
             revision_queue=revision_queue,

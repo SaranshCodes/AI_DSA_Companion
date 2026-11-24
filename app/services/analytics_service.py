@@ -12,7 +12,7 @@ def _is_independent_solve(session: Dict[str, Any]) -> bool:
     return (
         _is_solved(session)
         and (session.get("hints_used") or 0)==0
-        and not bool(session.get("appraoch_requested"))
+        and not bool(session.get("approach_requested"))
         and not bool (session.get("code_requested"))
     ) 
 
