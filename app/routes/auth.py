@@ -28,6 +28,25 @@ async def login(credentials: LoginRequest, db:Client = Depends(get_supabase)):
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail = str(e))
+
+@router.post("/signup")
+async def signup(credentials: LoginRequest, db: Client = Depends(get_supabase)):
+    """
+    Registers a new user with Supabase Auth and returns an access token if auto-confirmed.
+    """
+    try:
+        response = db.auth.sign_up({
+            "email": credentials.email,
+            "password": credentials.password
+        })
+        token = response.session.access_token if response.session else None
+        return {
+            "access_token": token or "",
+            "token_type": "bearer",
+            "message": "User registered successfully!" if token else "Registration submitted. Please check email or log in."
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
     
 @router.get("/me")
 async def get_my_profile(current_user = Depends(get_current_user)):
