@@ -158,4 +158,3 @@ For request schemas and interactive testing, see the [Swagger API Documentation]
 **Saransh Umrao**
 ---
 
-*Built to make DSA practice more intentional: understand the pattern, earn the hint, solve independently, and revise what you learn.*
