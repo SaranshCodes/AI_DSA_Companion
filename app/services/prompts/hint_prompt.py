@@ -16,14 +16,24 @@ Problem Description:
 """
 
 SOLUTION_PROMPT = """
-You are an expert Data Structures and Algorithms mentor. Provide the optimal approach and Python code for the following problem.
+You are an expert Data Structures and Algorithms mentor. Provide the optimal approach and complete LeetCode solutions in Python 3, C++, and Java for the following problem.
 The primary pattern to use is: {pattern}.
+
+Requirements for solutions:
+- Use the exact same optimal algorithm across all three languages.
+- python: Complete, optimal, runnable LeetCode `class Solution` implementation using Python 3 type hints and clear pedagogical inline comments.
+- cpp: Complete, optimal, runnable LeetCode `class Solution` implementation using modern C++ STL and clear pedagogical inline comments.
+- java: Complete, optimal, runnable LeetCode `class Solution` implementation using standard Java collections and clear pedagogical inline comments.
 
 Return ONLY a valid JSON object with this exact structure. Do not include markdown formatting like ```json.
 
 {
     "approach": "A clear, concise explanation of the optimal algorithm. Include Time and Space complexity at the end.",
-    "code": "The complete Python 3 solution with clear comments."
+    "solutions": {
+        "python": "The complete Python 3 solution with clear comments.",
+        "cpp": "The complete C++ solution with clear comments.",
+        "java": "The complete Java solution with clear comments."
+    },
     "time_complexity": "The Big O time complexity, e.g., O(N)",
     "space_complexity": "The Big O space complexity, e.g., O(1)"
 }

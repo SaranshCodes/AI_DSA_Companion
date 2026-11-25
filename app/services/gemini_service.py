@@ -1,9 +1,22 @@
 import json
 from google import genai
+from pydantic import BaseModel
 from app.core.config import settings
-from app.schemas.analysis import PatternAnalysisResponse, HintResponse, SolutionResponse
+from app.schemas.analysis import (
+    PatternAnalysisResponse,
+    HintResponse,
+    SolutionResponse,
+    MultiLanguageCode,
+)
 from app.services.prompts.prompt_pattern import PATTERN_ANALYSIS_PROMPT
 from app.services.prompts.hint_prompt import PROGRESSIVE_HINT_PROMPT, SOLUTION_PROMPT
+
+# Internal response schema for Gemini output
+class GeminiSolutionInternal(BaseModel):
+    approach: str
+    solutions: MultiLanguageCode
+    time_complexity: str
+    space_complexity: str
 
 # Initialize the client once using the validated setting
 try:
@@ -65,7 +78,7 @@ def generate_hint(problem_text: str, pattern: str, hint_level: int) -> HintRespo
         raise Exception(f"Failed to generate hint: {str(e)}")
 
 def generate_solution(problem_text: str, pattern: str) -> SolutionResponse:
-    """Requests the final approach and code, returned as structured JSON."""
+    """Requests the final approach and multi-language code, returned as structured JSON."""
     try:
         prompt = SOLUTION_PROMPT.replace("{pattern}", pattern)
         prompt = prompt.replace("{problem_text}", problem_text)
@@ -82,7 +95,28 @@ def generate_solution(problem_text: str, pattern: str) -> SolutionResponse:
             raw_text = raw_text[3:-3].strip()
             
         solution_data = json.loads(raw_text)
-        return SolutionResponse(**solution_data)
+        
+        if "solutions" in solution_data and isinstance(solution_data["solutions"], dict):
+            parsed = GeminiSolutionInternal(**solution_data)
+            return SolutionResponse(
+                approach=parsed.approach,
+                code=parsed.solutions.python,
+                solutions=parsed.solutions,
+                time_complexity=parsed.time_complexity,
+                space_complexity=parsed.space_complexity,
+            )
+        elif "code" in solution_data:
+            python_code = solution_data["code"]
+            fallback_sols = MultiLanguageCode(python=python_code, cpp="", java="")
+            return SolutionResponse(
+                approach=solution_data.get("approach", ""),
+                code=python_code,
+                solutions=fallback_sols,
+                time_complexity=solution_data.get("time_complexity", ""),
+                space_complexity=solution_data.get("space_complexity", ""),
+            )
+        else:
+            return SolutionResponse(**solution_data)
         
     except json.JSONDecodeError:
         raise ValueError("AI returned malformed JSON for the solution.")

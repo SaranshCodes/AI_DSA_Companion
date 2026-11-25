@@ -438,4 +438,111 @@ export const mockSolution: SolutionResponse = {
                     max_area = max(max_area, dfs(r, c))
                     
         return max_area`,
+  solutions: {
+    python: `class Solution:
+    def maxAreaOfIsland(self, grid: list[list[int]]) -> int:
+        if not grid or not grid[0]:
+            return 0
+            
+        rows, cols = len(grid), len(grid[0])
+        max_area = 0
+        
+        def dfs(r: int, c: int) -> int:
+            if r < 0 or r >= rows or c < 0 or c >= cols or grid[r][c] == 0:
+                return 0
+            # Mark cell as visited
+            grid[r][c] = 0
+            # Explore 4 directions
+            return (
+                1
+                + dfs(r + 1, c)
+                + dfs(r - 1, c)
+                + dfs(r, c + 1)
+                + dfs(r, c - 1)
+            )
+            
+        for r in range(rows):
+            for c in range(cols):
+                if grid[r][c] == 1:
+                    max_area = max(max_area, dfs(r, c))
+                    
+        return max_area`,
+    cpp: `#include <vector>
+#include <algorithm>
+
+class Solution {
+public:
+    int maxAreaOfIsland(std::vector<std::vector<int>>& grid) {
+        if (grid.empty() || grid[0].empty()) return 0;
+        
+        int rows = grid.size();
+        int cols = grid[0].size();
+        int maxArea = 0;
+        
+        for (int r = 0; r < rows; ++r) {
+            for (int c = 0; c < cols; ++c) {
+                if (grid[r][c] == 1) {
+                    maxArea = std::max(maxArea, dfs(grid, r, c, rows, cols));
+                }
+            }
+        }
+        
+        return maxArea;
+    }
+
+private:
+    int dfs(std::vector<std::vector<int>>& grid, int r, int c, int rows, int cols) {
+        // Base case: check boundary and water/visited cells
+        if (r < 0 || r >= rows || c < 0 || c >= cols || grid[r][c] == 0) {
+            return 0;
+        }
+        
+        // Mark cell as visited (sink island)
+        grid[r][c] = 0;
+        
+        // Explore 4 directions
+        return 1 + dfs(grid, r + 1, c, rows, cols)
+                 + dfs(grid, r - 1, c, rows, cols)
+                 + dfs(grid, r, c + 1, rows, cols)
+                 + dfs(grid, r, c - 1, rows, cols);
+    }
+};`,
+    java: `class Solution {
+    public int maxAreaOfIsland(int[][] grid) {
+        if (grid == null || grid.length == 0 || grid[0].length == 0) {
+            return 0;
+        }
+        
+        int rows = grid.length;
+        int cols = grid[0].length;
+        int maxArea = 0;
+        
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                if (grid[r][c] == 1) {
+                    maxArea = Math.max(maxArea, dfs(grid, r, c, rows, cols));
+                }
+            }
+        }
+        
+        return maxArea;
+    }
+    
+    private int dfs(int[][] grid, int r, int c, int rows, int cols) {
+        // Base case: check boundary and visited/water cells
+        if (r < 0 || r >= rows || c < 0 || c >= cols || grid[r][c] == 0) {
+            return 0;
+        }
+        
+        // Mark cell as visited (sink island)
+        grid[r][c] = 0;
+        
+        // Explore 4 directions
+        return 1 + dfs(grid, r + 1, c, rows, cols)
+                 + dfs(grid, r - 1, c, rows, cols)
+                 + dfs(grid, r, c + 1, rows, cols)
+                 + dfs(grid, r, c - 1, rows, cols);
+    }
+}`,
+  },
 };

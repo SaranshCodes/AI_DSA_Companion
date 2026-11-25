@@ -127,11 +127,12 @@ export const HelpLadder: React.FC<HelpLadderProps> = ({
       {/* Reference Code */}
       <HelpRow
         label="Solution Code"
-        sublabel="Python 3 reference implementation"
+        sublabel="Python, C++, and Java reference implementations"
         isUnlocked={hasCode}
         isLocked={!hasApproach}
         lockReason="Reveal Approach first"
         code={session.solution?.code}
+        solutions={session.solution?.solutions}
         onReveal={() => setConfirmDialog('code')}
         ctaText="Show Code"
       />

@@ -23,9 +23,16 @@ export interface HintResponse {
   hint: string;
 }
 
+export interface MultiLanguageCode {
+  python: string;
+  cpp: string;
+  java: string;
+}
+
 export interface SolutionResponse {
   approach: string;
-  code: string; // Python 3
+  code: string; // Python 3 (preserved for backward compatibility)
+  solutions?: MultiLanguageCode;
   time_complexity: string;
   space_complexity: string;
 }
@@ -138,7 +145,7 @@ export interface PatternAnalytics {
 
 export interface WeakPattern {
   pattern: string;
-  weakness_score: number; // 0 = mastered, 100 = highest priority
+  weakness_score: number;
   independent_solve_rate: number;
   avg_confidence: number;
   attempts: number;

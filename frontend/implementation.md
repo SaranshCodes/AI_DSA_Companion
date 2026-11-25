@@ -324,7 +324,7 @@ During codebase audit, the 3 known issues were verified against backend source c
 - [x] All 6 screens plus login implemented and responsive down to 360px.
 - [x] Visual fidelity matched to design specifications with top navigation bar.
 - [x] Session counters follow Section 8 rules precisely and partition pre-solve vs post-solve events.
-- [x] All 28 Vitest unit tests pass (`npm run test`).
+- [x] All 32 Vitest unit tests pass (`npm run test`).
 - [x] Zero TypeScript errors (`npm run typecheck`).
 - [x] Zero ESLint errors or warnings (`npm run lint`).
 - [x] Production build generated cleanly in `dist/` (`npm run build`).
@@ -335,3 +335,7 @@ During codebase audit, the 3 known issues were verified against backend source c
   - Session loading deferred until `user.id` is available.
   - `logout()` calls `localStorage.clear()` and resets active session React state to `null`.
   - `login()` and `signup()` clear leftover session keys before setting new token and user object.
+- [x] Multi-language solution support (Python, C++, Java):
+  - Backend schema: `MultiLanguageCode` with `python`, `cpp`, and `java` fields; backward-compatible `code` field preserved.
+  - Gemini prompt & service: `gemini-2.5-flash` produces single unified optimal algorithm with complete `class Solution` implementations for all three languages.
+  - Frontend: Segmented tab switcher (`Python`, `C++`, `Java`) with persisted language preference, dynamic copy button (`Copy Python`, `Copy C++`, `Copy Java`), multi-language Prism syntax highlighting, and safe fallback for legacy cached sessions.
