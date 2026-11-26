@@ -1,4 +1,5 @@
 import logging
+import time
 from google import genai
 from google.genai import types
 from pydantic import BaseModel
@@ -14,16 +15,17 @@ from app.services.prompts.hint_prompt import PROGRESSIVE_HINT_PROMPT, SOLUTION_P
 
 logger = logging.getLogger(__name__)
 
-# Each model maintains an independent Free Tier daily quota bucket
+# Ordered fallback chain: each model maintains an independent Free Tier quota bucket
 MODEL_FALLBACK_CHAIN = [
     "gemini-3.8-flash",
     "gemini-3.5-flash-lite",
     "gemini-3.1-flash-lite",
+    "gemini-2.5-flash-lite",
 ]
 
 
 class QuotaExceededError(Exception):
-    """Raised when all fallback Gemini models have exhausted their rate limits."""
+    """Raised when all fallback Gemini models are rate-limited or temporarily unavailable."""
 
 
 # Internal response schema for Gemini output
@@ -41,17 +43,32 @@ except Exception as e:
     raise ValueError(f"Failed to initialize Gemini Client: {str(e)}")
 
 
-def _is_rate_limit_error(err: Exception) -> bool:
+def _should_fallback(err: Exception) -> bool:
+    """Returns True for quota limits (429), transient demand spikes (503/500/504), or unavailable model IDs (404)."""
     code = getattr(err, "code", None)
     msg = str(err)
-    return code == 429 or "429" in msg or "RESOURCE_EXHAUSTED" in msg
+    return code in (429, 503, 500, 504, 404) or any(
+        token in msg
+        for token in (
+            "429",
+            "RESOURCE_EXHAUSTED",
+            "503",
+            "UNAVAILABLE",
+            "500",
+            "INTERNAL",
+            "504",
+            "DEADLINE_EXCEEDED",
+            "404",
+            "NOT_FOUND",
+        )
+    )
 
 
 def _generate_with_fallback(
     contents: str,
     config: types.GenerateContentConfig | None = None,
 ):
-    """Calls Gemini across MODEL_FALLBACK_CHAIN, falling back automatically on 429 errors."""
+    """Calls Gemini across MODEL_FALLBACK_CHAIN, failing over automatically on 429 quota or 503 demand spikes."""
     last_error = None
     for model_name in MODEL_FALLBACK_CHAIN:
         try:
@@ -61,14 +78,15 @@ def _generate_with_fallback(
                 config=config,
             )
         except Exception as e:
-            if _is_rate_limit_error(e):
-                logger.warning(f"Quota exhausted for {model_name}; switching to next model...")
+            if _should_fallback(e):
+                logger.warning(f"{model_name} unavailable or rate-limited ({e}); switching to next model...")
                 last_error = e
+                time.sleep(0.4)
                 continue
             raise
 
     raise QuotaExceededError(
-        "Daily AI quota reached across available models. Please try again later."
+        "AI models are currently busy or rate-limited. Please try again in a few seconds."
     ) from last_error
 
 
